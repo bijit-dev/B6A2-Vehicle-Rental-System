@@ -18,14 +18,14 @@ const signin = async (payLoad: Record<string, unknown>) => {
     ]);
 
     if (result.rows.length === 0) {
-        return { false: true, msg: "User not found" };
+        return { false: true, message: "User not found" };
     }
 
     const user = result.rows[0];
     const comparePass = await bcrypt.compare(password as string, user.password);
 
     if (!comparePass) {
-        return { success: false, msg: "Invalid password" };
+        return { success: false, message: "Invalid password" };
     }
     const JWT_SECRET = envConfigs.jwtSecret;
 
@@ -36,7 +36,7 @@ const signin = async (payLoad: Record<string, unknown>) => {
     );
 
     delete user.password;
-    return { token, user  };
+    return { token, user };
 };
 
 export const authService = {
