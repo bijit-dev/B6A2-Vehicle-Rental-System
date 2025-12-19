@@ -14,7 +14,7 @@ const createBooking = async (req: Request, res: Response) => {
         }
 
         const result = await bookingService.createBooking(req.body);
-
+        
         if (!result.success) {
             return res.status(400).json({
                 success: false,
@@ -25,7 +25,7 @@ const createBooking = async (req: Request, res: Response) => {
         res.status(201).json({
             success: true,
             msg: "Booking Created successfully",
-            data: result.data?.rows[0],
+            data: result,
         });
     } catch (err: any) {
         res.status(500).json({
@@ -48,11 +48,7 @@ const getBookings = async (req: Request, res: Response) => {
 
         const result = await bookingService.getBookings(user);
 
-        res.status(200).json({
-            success: true,
-            msg: "Booking Fetched successfully",
-            data: result.rows,
-        });
+        res.status(200).json(result);
     } catch (err: any) {
         res.status(500).json({
             success: false,
@@ -66,31 +62,30 @@ const updateBooking = async (req: Request, res: Response) => {
         if (!req.user) {
             return res.status(401).json({
                 success: false,
-                msg: "You must be logged in",
+                message: "You must be logged in",
             });
         }
+
+        const { status } = req.body;
 
         const result = await bookingService.updateBooking(
             req.params.bookingId as string,
-            req.user as any
+            req.user,
+            status
         );
 
         if (!result.success) {
-            res.status(404).json({
+            return res.status(400).json({
                 success: false,
-                msg: "Booking Not Found",
+                message: result.msg,
             });
         }
 
-        res.status(200).json({
-            success: true,
-            msg: "Vehicle Fetched Successfully",
-            data: result,
-        });
+        res.status(200).json(result);
     } catch (err: any) {
         res.status(500).json({
             success: false,
-            msg: err.message,
+            message: err.message,
         });
     }
 };
