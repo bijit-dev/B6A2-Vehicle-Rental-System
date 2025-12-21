@@ -31,7 +31,7 @@ const signin = async (payLoad: Record<string, unknown>) => {
 
     const token = jwt.sign(
         { id: user.id, name: user.name, email: user.email, role: user.role },
-        JWT_SECRET,
+        JWT_SECRET as string,
         { expiresIn: "2d" }
     );
 
